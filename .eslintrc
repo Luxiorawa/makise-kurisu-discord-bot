@@ -3,13 +3,12 @@
 		"node": true,
 		"es2021": true
 	},
-	"plugins": ["security", "github", "unicorn", "import", "prettier"],
+	"plugins": ["security", "unicorn", "import", "prettier"],
 	"extends": [
 		"eslint:recommended",
 		"plugin:node/recommended",
 		"plugin:security/recommended",
 		"plugin:unicorn/recommended",
-		"plugin:github/recommended",
 		"plugin:import/recommended",
 
 		"plugin:prettier/recommended"
@@ -26,8 +25,15 @@
 				"SwitchCase": 1
 			}
 		],
-		"node/exports-style": ["error", "module.exports"],
 		"node/file-extension-in-import": ["error", "always"],
-		"node/no-deprecated-api": "warn"
+		"node/no-deprecated-api": "warn",
+		"node/no-unpublished-import": [
+			"error",
+			{
+				"allowModules": [],
+				"convertPath": null,
+				"tryExtensions": [".js", ".json"]
+			}
+		]
 	}
 }

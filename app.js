@@ -1,12 +1,28 @@
 require("dotenv/config");
 
-const configFile = require("./Config/config.js");
-const { Client, Intents } = require("discord.js");
+const fs = require("fs");
+const CONFIG_FILE = require("./Config/config.js");
+const { Client, Collection, Intents } = require("discord.js");
+const { registerBotInteractionsEvent, registerBotIsReadyEvent } = require("./Events/bot.js");
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+(async () => {
+	const CLIENT = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-client.once("ready", () => {
-	console.log("Bot logged in !");
-});
+	await searchAllBotCommands(CLIENT);
+	await registerBotInteractionsEvent(CLIENT);
+	await registerBotIsReadyEvent(CLIENT);
 
-client.login(configFile?.discord.bot.token);
+	CLIENT.login(CONFIG_FILE?.discord.bot.token);
+})();
+
+async function searchAllBotCommands(CLIENT) {
+	CLIENT.commands = new Collection();
+
+	const COMMAND_FILES = fs.readdirSync("./commands").filter((file) => file.endsWith(".js"));
+
+	for (const FILE of COMMAND_FILES) {
+		const COMMAND = require(`./Commands/${FILE}`);
+
+		CLIENT.commands.set(COMMAND.data.name, COMMAND);
+	}
+}
